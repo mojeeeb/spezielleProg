@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartops-bot
+  namespace: smartops
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: smartops-bot
+  template:
+    metadata:
+      labels:
+        app: smartops-bot
+    spec:
+      containers:
+      - name: bot
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: N8N_WEBHOOK_URL
+          value: {{ .Values.n8n.webhookUrl | quote }}
+        - name: SCAN_INTERVAL
+          value: "300"
+        volumeMounts:
+        - name: trivy-results
+          mountPath: /app
+      volumes:
+      - name: trivy-results
+        emptyDir: {}

@@ -1,0 +1,17 @@
+{
+    "Results": [
+      {
+        "Target": "python:3.11-slim",
+        "Vulnerabilities": [
+          {
+            "VulnerabilityID": "CVE-2023-1234",
+            "PkgName": "libxml2",
+            "InstalledVersion": "2.9.10",
+            "FixedVersion": "2.9.12",
+            "Severity": "HIGH",
+            "Title": "libxml2 vulnerability"
+          }
+        ]
+      }
+    ]
+  }

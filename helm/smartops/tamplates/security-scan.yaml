@@ -1,0 +1,30 @@
+{{- if .Values.securityScan.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: trivy-scan
+  namespace: smartops
+spec:
+  schedule: "{{ .Values.securityScan.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: trivy
+            image: aquasec/trivy:latest
+            args:
+            - image
+            - --format
+            - json
+            - --output
+            - /data/trivy-results.json
+            - {{ .Values.image.repository }}:{{ .Values.image.tag }}
+            volumeMounts:
+            - name: trivy-results
+              mountPath: /data
+          volumes:
+          - name: trivy-results
+            emptyDir: {}
+          restartPolicy: OnFailure
+{{- end }}

@@ -1,0 +1,18 @@
+replicaCount: 1
+image:
+  repository: smartops-bot
+  tag: latest
+  pullPolicy: IfNotPresent
+discordBot:
+  enabled: false
+monitoring:
+  enabled: true
+  grafana:
+    adminPassword: admin
+  prometheus:
+    enabled: true
+securityScan:
+  enabled: true
+  schedule: "0 * * * *"
+n8n:
+  webhookUrl: "http://host.docker.internal:5678/webhook/scan-result"

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: smartops
+version: 0.1.0
+description: Helm chart for SmartOpsBot and Monitoring
+appVersion: "1.0.0"
+type: application
