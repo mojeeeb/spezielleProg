@@ -3,6 +3,7 @@ import json
 import time
 import requests
 import logging
+from kubernetes import client, config
 
 logging.basicConfig(level=logging.INFO)
 
@@ -18,6 +19,51 @@ def load_scan_result(path):
     except Exception as e:
         logging.error(f"Fehler beim Laden der Datei: {e}")
         return None
+    
+def monitor_kubernetes():
+    """Monitor Kubernetes for issues"""
+    try:
+        # Load kube config
+        try:
+            config.load_incluster_config()
+        except:
+            config.load_kube_config()
+        
+        v1 = client.CoreV1Api()
+        
+        # Check for pods not in Running state
+        pods = v1.list_namespaced_pod(namespace="smartops")
+        issues = []
+        
+        for pod in pods.items:
+            if pod.status.phase != "Running":
+                issues.append({
+                    "pod": pod.metadata.name,
+                    "namespace": pod.metadata.namespace,
+                    "status": pod.status.phase,
+                    "reason": pod.status.reason or "Unknown"
+                })
+        
+        if issues:
+            # Determine severity based on number of issues
+            severity = "LOW"
+            if len(issues) > 5:
+                severity = "CRITICAL"
+            elif len(issues) > 3:
+                severity = "HIGH"
+            elif len(issues) > 1:
+                severity = "MEDIUM"
+            
+            # Create summary
+            summary = f"Found {len(issues)} pod issues in Kubernetes cluster:\n"
+            for issue in issues[:3]:  # Show only first 3 issues
+                summary += f"• Pod {issue['pod']} is in {issue['status']} state\n"
+            
+            if len(issues) > 3:
+                summary += f"• ...and {len(issues) - 3} more issues\n"
+    
+    except Exception as e:
+        print(f"Error monitoring Kubernetes: {str(e)}")
 
 def send_to_n8n(payload):
     try:
@@ -26,15 +72,41 @@ def send_to_n8n(payload):
     except Exception as e:
         logging.error(f"Fehler beim Senden an n8n: {e}")
 
+def parse_trivy_results(results_file):
+    """Parse Trivy scan results"""
+    try:
+        with open(results_file, 'r') as f:
+            data = json.load(f)
+        
+        vulnerabilities = []
+        for result in data.get("Results", []):
+            for vuln in result.get("Vulnerabilities", []):
+                vulnerabilities.append({
+                    "VulnerabilityID": vuln.get("VulnerabilityID"),
+                    "PkgName": vuln.get("PkgName"),
+                    "Severity": vuln.get("Severity"),
+                    "Title": vuln.get("Title"),
+                    "Description": vuln.get("Description")
+                })
+        
+        return vulnerabilities
+    except Exception as e:
+        return [{"Error": f"Failed to parse Trivy results: {str(e)}"}]
+
 def main():
     while True:
-        logging.info("🔍 Scandaten werden geladen...")
-        result = load_scan_result(SCAN_FILE)
-        if result:
-            send_to_n8n(result)
-        else:
-            logging.warning("Kein gültiges Ergebnis gefunden.")
-        time.sleep(SCAN_INTERVAL)
-
+        try:
+            logging.info("🔍 Scandaten werden geladen...")
+            # Check for new Trivy results
+            monitor_kubernetes()
+            if os.path.exists("/data/trivy-results.json"):
+                vulnerabilities = parse_trivy_results("/data/trivy-results.json")
+                send_to_n8n(vulnerabilities)
+            else:
+                logging.warning("Kein gültiges Ergebnis gefunden.")
+            time.sleep(SCAN_INTERVAL)
+        except Exception as e:
+            print(f"Error in main loop: {str(e)}")
+            time.sleep(60)
 if __name__ == "__main__":
     main()
