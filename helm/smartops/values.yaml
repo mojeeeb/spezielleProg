@@ -1,10 +1,8 @@
 replicaCount: 1
 image:
-  repository: spezielleProg
+  repository: smartops-bot
   tag: latest
   pullPolicy: IfNotPresent
-discordBot:
-  enabled: false
 monitoring:
   enabled: true
   grafana:
