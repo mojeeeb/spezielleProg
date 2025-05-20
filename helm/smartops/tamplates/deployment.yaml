@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: smartops-bot
+  name: smartops
   namespace: smartops
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: smartops-bot
+      app: smartops
   template:
     metadata:
       labels:
-        app: smartops-bot
+        app: smartops
     spec:
       containers:
       - name: bot

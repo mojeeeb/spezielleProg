@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/mojeeeb/spezielleProg.git
-    targetRevision: HEAD
+    targetRevision: main
     path: helm/smartops
   destination:
     server: https://kubernetes.default.svc

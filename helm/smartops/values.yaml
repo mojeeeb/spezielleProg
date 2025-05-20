@@ -1,6 +1,6 @@
 replicaCount: 1
 image:
-  repository: smartops-bot
+  repository: spezielleProg
   tag: latest
   pullPolicy: IfNotPresent
 discordBot:
