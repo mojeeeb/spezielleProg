@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: run-auto-script
+  namespace: smartops
+spec:
+  template:
+    spec:
+      containers:
+        - name: auto
+          image: smartops-bot:latest
+          command: ["python", "/app/auto.py"]
+          env:
+            - name: SENDER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auto-script-secret
+                  key: SENDER_PASSWORD
+      restartPolicy: Never
