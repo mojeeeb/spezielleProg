@@ -1,0 +1,38 @@
+{
+  "extends": ["config:recommended"],
+  "labels": ["dependencies"],
+  "timezone": "Europe/Berlin",
+  "schedule": ["after 2am and before 6am on every weekday"],
+  "packageRules": [
+    {
+      "matchManagers": ["pip_requirements"],
+      "matchDatasources": ["pypi"],
+      "groupName": "Python dependencies",
+      "enabled": true
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "groupName": "Docker base images"
+    },
+    {
+      "matchManagers": ["regex"],
+      "groupName": "Image Tags in Helm values.yaml"
+    }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": ["^helm/smartops/values.yaml$"],
+      "matchStrings": [
+        "tag:\\s?(?<currentValue>.*)"
+      ],
+      "depNameTemplate": "smartops-bot",
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "docker": {
+    "enabled": true
+  },
+  "pip_requirements": {
+    "enabled": true
+  }
+}
