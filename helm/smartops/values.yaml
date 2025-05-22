@@ -13,4 +13,4 @@ securityScan:
   enabled: true
   schedule: "0 * * * *"
 n8n:
-  webhookUrl: "http://host.docker.internal:5678/webhook/scan-result"
+  webhookUrl: "https://hooks.ferdous.work/webhook/def3c366-c5ca-45ab-ae01-8d6befd8ef00"
