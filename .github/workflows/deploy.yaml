@@ -38,12 +38,15 @@ jobs:
           ignore-unfixed: true
 
       - name: Commit updated values.yaml (optional)
+        env:
+            PAT_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          sed -i "s/tag: .*/tag: latest/" helm/smartops/values.yaml
-          git config --global user.email "github-actions@users.noreply.github.com"
-          git config --global user.name "GitHub Actions"
-          git add helm/smartops/values.yaml
-          git commit -m "Update image tag to latest" || echo "No changes"
-          git push
+            sed -i "s/tag: .*/tag: latest/" helm/smartops/values.yaml
+            git config --global user.email "ci-bot@github.com"
+            git config --global user.name "CI Bot"
+            git add helm/smartops/values.yaml
+            git commit -m "Update image tag to latest" || echo "No changes"
+            git remote set-url origin https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }}
+            git push origin HEAD:main
 
       # Argo CD handles the deployment from repo → cluster
