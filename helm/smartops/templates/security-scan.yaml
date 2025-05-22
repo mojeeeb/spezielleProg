@@ -14,13 +14,12 @@ spec:
           - name: trivy
             image: aquasec/trivy:latest
             args:
-              - fs
-              - --format
-              - json
-              - --output
-              - /data/trivy-results.json
-              - /app
-              - "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            - image
+            - --format
+            - json
+            - --output
+            - /data/trivy-results.json
+            - smartops-bot:latest
             volumeMounts:
             - name: trivy-results
               mountPath: /data
