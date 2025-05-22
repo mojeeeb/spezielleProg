@@ -9,3 +9,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Code kopieren
 COPY bot.py .
 COPY auto.py .
+
+CMD ["python", "bot.py"] 
