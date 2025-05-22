@@ -14,12 +14,12 @@ spec:
           - name: trivy
             image: aquasec/trivy:latest
             args:
-              - fs
+              - image
+              - mojeeeb/smartops-bot:latest
               - --format
               - json
               - --output
               - /data/trivy-results.json
-              - /spezielleProg
             volumeMounts:
             - name: trivy-results
               mountPath: /data
