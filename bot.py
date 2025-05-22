@@ -97,7 +97,6 @@ def main():
     while True:
         try:
             logging.info("🔍 Scandaten werden geladen...")
-            result = load_scan_result(SCAN_FILE)
             # Check for new Trivy results
             monitor_kubernetes()
             if os.path.exists("/data/trivy-results.json"):
@@ -106,7 +105,24 @@ def main():
             else:
                 logging.warning("Kein gültiges Ergebnis gefunden.")
                 #zum testen
-                send_to_n8n(result)
+                vulnerabilities = [{
+                                        "Results": [
+                                        {
+                                            "Target": "python:3.11-slim",
+                                            "Vulnerabilities": [
+                                            {
+                                                "VulnerabilityID": "CVE-2023-1234",
+                                                "PkgName": "libxml2",
+                                                "InstalledVersion": "2.9.10",
+                                                "FixedVersion": "2.9.12",
+                                                "Severity": "HIGH",
+                                                "Title": "libxml2 vulnerability"
+                                            }
+                                            ]
+                                        }
+                                        ]
+                                    }]
+                send_to_n8n(vulnerabilities)
             time.sleep(SCAN_INTERVAL)
         except Exception as e:
             print(f"Error in main loop: {str(e)}")
