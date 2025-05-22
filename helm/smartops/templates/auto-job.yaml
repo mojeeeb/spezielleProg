@@ -1,19 +1,30 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: run-auto-script
+  name: auto-script
   namespace: smartops
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auto-script
   template:
+    metadata:
+      labels:
+        app: auto-script
     spec:
       containers:
-        - name: auto
-          image: smartops-bot:latest
-          command: ["python", "/spezielleProg/auto.py"]
-          env:
-            - name: SENDER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: auto-script-secret
-                  key: SENDER_PASSWORD
-      restartPolicy: Never
+      - name: auto
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["python", "/app/auto.py"]
+        env:
+        - name: SENDER_EMAIL
+          value: "moj.khaled0@gmail.com"
+        - name: SENDER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: auto-script-secret
+              key: SENDER_PASSWORD
+        - name: RECEIVER_EMAIL
+          value: "al.hazmi.mojeeb@gmail.com"
