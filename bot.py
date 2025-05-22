@@ -7,7 +7,7 @@ from kubernetes import client, config
 
 logging.basicConfig(level=logging.INFO)
 
-N8N_WEBHOOK_URL = os.getenv("N8N_WEBHOOK_URL", "https://hooks.ferdous.work/webhook/def3c366-c5ca-45ab-ae01-8d6befd8ef00http://localhost:5678/webhook/22e3bd48-0301-4ecd-9493-d8eff6678856")
+N8N_WEBHOOK_URL = os.getenv("N8N_WEBHOOK_URL", "https://hooks.ferdous.work/webhook/def3c366-c5ca-45ab-ae01-8d6befd8ef00")
 SCAN_FILE = "trivy-results.json"
 SCAN_INTERVAL = int(os.getenv("SCAN_INTERVAL", "300"))
 
