@@ -97,6 +97,7 @@ def main():
     while True:
         try:
             logging.info("🔍 Scandaten werden geladen...")
+            result = load_scan_result(SCAN_FILE)
             # Check for new Trivy results
             monitor_kubernetes()
             if os.path.exists("/data/trivy-results.json"):
@@ -104,6 +105,8 @@ def main():
                 send_to_n8n(vulnerabilities)
             else:
                 logging.warning("Kein gültiges Ergebnis gefunden.")
+                #zum testen
+                send_to_n8n(result)
             time.sleep(SCAN_INTERVAL)
         except Exception as e:
             print(f"Error in main loop: {str(e)}")
