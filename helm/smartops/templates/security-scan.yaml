@@ -19,8 +19,7 @@ spec:
               - json
               - --output
               - /data/trivy-results.json
-              - /spezielleProg
-              - "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              - /app
             volumeMounts:
             - name: trivy-results
               mountPath: /data
