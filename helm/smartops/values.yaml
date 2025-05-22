@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: smartops-bot
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: NEVER
 monitoring:
   enabled: true
   grafana:
