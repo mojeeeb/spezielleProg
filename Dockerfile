@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-WORKDIR /app
+WORKDIR /spezielleProg
 
 # System-Pakete installieren + Chromedriver
 RUN apt-get update && \
