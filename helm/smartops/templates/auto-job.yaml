@@ -9,7 +9,7 @@ spec:
       containers:
         - name: auto
           image: smartops-bot:latest
-          command: ["python", "/app/auto.py"]
+          command: ["python", "/spezielleProg/auto.py"]
           env:
             - name: SENDER_PASSWORD
               valueFrom:
